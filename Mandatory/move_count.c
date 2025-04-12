@@ -1,0 +1,77 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   move_count.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: achemlal <achemlal@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/21 16:53:54 by achemlal          #+#    #+#             */
+/*   Updated: 2025/01/28 09:51:04 by achemlal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "so_long.h"
+
+static int	size_number(int num)
+{
+	int	i;
+
+	i = 0;
+	if (num < 0)
+		num *= -1;
+	while (num != 0)
+	{
+		num /= 10;
+		i++;
+	}
+	return (i);
+}
+
+static void	handle_negative(long *n, int *i, char *string)
+{
+	if (*n < 0)
+	{
+		string[*i] = '-';
+		*n *= -1;
+		(*i)++;
+	}
+}
+
+static char	*ft_itoa(int num)
+{
+	char		*string;
+	int			i;
+	int			count;
+	long int	n;
+
+	n = num;
+	i = 0;
+	count = size_number(n);
+	if (n < 0 || count == 0)
+		count++;
+	string = (char *)malloc(count);
+	if (!string)
+		return (NULL);
+	handle_negative(&n, &i, string);
+	while (count > i)
+	{
+		string[count - 1] = (n % 10) + '0';
+		n /= 10;
+		count--;
+	}
+	return (string);
+}
+
+void	display_move_count(t_game *g)
+{
+	char	*count_str;
+
+	count_str = ft_itoa(g->move);
+	if (count_str)
+	{
+		write(1, "Player moves: ", 14);
+		write(1, count_str, ft_strlen(count_str));
+		write(1, "\n", 1);
+		free(count_str);
+	}
+}
